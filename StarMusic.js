@@ -253,7 +253,7 @@ client.on('message', message => {
 	 
 	 
 client.on("message", message => {
- if (message.content === "1help") {
+ if (message.content === "=music") {
         message.react("✅")
            message.react("📬")
   const embed = new Discord.RichEmbed() 
@@ -261,17 +261,17 @@ client.on("message", message => {
       .setDescription(`
 ══════════ஜ۩۞۩ஜ════════════  
     
-     1play
+     =play
      امر تشغيل الأغنية , !شغل الرابط او اسم الأعنية
-     1skip
+     =skip
      تغير الأغنية
-     1pause
+     =pause
      ايقاف الأغنية
-     1resume
+     =resume
      مواصلة الأغنية
-     1vol
+     =vol
    لتغيير درجه الصوت 1-100
-     1stop
+     =stop
      خروج البوت من الروم
 
 
