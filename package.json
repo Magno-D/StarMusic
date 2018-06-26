@@ -2,9 +2,9 @@
   "name": "Test",
   "description": "Test",
   "version": "2.0.0",
-  "main": "bot.js",
+  "main": "StarMusic.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node StarMusic.js"
   },
   "repository": {
     "type": "git",
