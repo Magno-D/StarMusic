@@ -15,6 +15,24 @@ client.on('ready', () => {
   console.log(`${client.user.username} is Online`);
   console.log('-----------------')
 });
+client.on('ready', function(){
+        client.user.setStatus("dnd");
+        var ms = 60000 ;
+        var setGame = ['To Get Help | =music','By :Rando#6966 | =music'];
+        var i = -1;
+        var j = 0;
+        setInterval(function (){
+            if( i == -1 ){
+                j = 1;
+            }
+            if( i == (setGame.length)-1 ){
+                j = -1;
+            }
+            i = i+j;
+            client.user.setGame(setGame[i],`https://www.instagram.com/rando.i0/`);
+        }, ms);60000
+
+   });
 
 client.on('warn', console.warn);
 
@@ -40,16 +58,16 @@ client.on('message', async msg => { // eslint-disable-line
 
 	if (command === `play`) {
 		const voiceChannel = msg.member.voiceChannel;
-		if (!voiceChannel) return msg.channel.send('أنا آسف ولكن عليك أن تكون في قناة صوتية لتشغيل الموسيقى!');
+		if (!voiceChannel) return msg.channel.send('Im sorry but you should be in voice channel to play music');
 		const permissions = voiceChannel.permissionsFor(msg.client.user);
 		if (!permissions.has('CONNECT')) {
-			return msg.channel.send('لا أستطيع أن أتكلم في هذه القناة الصوتية، تأكد من أن لدي الصلاحيات الازمة !');
+			return msg.channel.send('I can not speak in this voice channel, make sure I have permission to speak in this channel');
 		}
 		if (!permissions.has('SPEAK')) {
-			return msg.channel.send('لا أستطيع أن أتكلم في هذه القناة الصوتية، تأكد من أن لدي الصلاحيات الازمة !');
+			return msg.channel.send('I can not speak in this voice channel, make sure I have permission to speak in this channel');
 		}
 		if (!permissions.has('EMBED_LINKS')) {
-			return msg.channel.sendMessage("**لا يوجد لدي صلاحيات `EMBED LINKS`**")
+			return msg.channel.sendMessage("**i dont have `EMBED LINKS` permission**")
 		}
 
 		if (url.match(/^https?:\/\/(www.youtube.com|youtube.com)\/playlist(.*)$/)) {
@@ -59,7 +77,7 @@ client.on('message', async msg => { // eslint-disable-line
 				const video2 = await youtube.getVideoByID(video.id); // eslint-disable-line no-await-in-loop
 				await handleVideo(video2, msg, voiceChannel, true); // eslint-disable-line no-await-in-loop
 			}
-			return msg.channel.send(` **${playlist.title}** تم اضافة القائمه!`);
+			return msg.channel.send(` **${playlist.title}** The list has been added`);
 		} else {
 			try {
 				var video = await youtube.getVideo(url);
@@ -68,7 +86,7 @@ client.on('message', async msg => { // eslint-disable-line
 					var videos = await youtube.searchVideos(searchString, 5);
 					let index = 0;
 					const embed1 = new Discord.RichEmbed()
-			        .setDescription(`**اختار رقم المقطع** :
+			        .setDescription(`**Select the vedio number** :
 ${videos.map(video2 => `[**${++index} **] \`${video2.title}\``).join('\n')}`)
 					.setFooter("")
 					msg.channel.sendEmbed(embed1).then(message =>{message.delete(20000)})
@@ -82,13 +100,13 @@ ${videos.map(video2 => `[**${++index} **] \`${video2.title}\``).join('\n')}`)
 						});
 					} catch (err) {
 						console.error(err);
-						return msg.channel.send('لم يتم تحديد العدد لتشغيل الاغنيه.');
+						return msg.channel.send('The number is not select to play the Music');
 					}
 					const videoIndex = parseInt(response.first().content);
 					var video = await youtube.getVideoByID(videos[videoIndex - 1].id);
 				} catch (err) {
 					console.error(err);
-					return msg.channel.send(':X: لم أستطع الحصول على أية نتائج بحث.');
+					return msg.channel.send(':X: I could not find any search results');
 				}
 			}
 			return handleVideo(video, msg, voiceChannel);
@@ -110,11 +128,11 @@ ${videos.map(video2 => `[**${++index} **] \`${video2.title}\``).join('\n')}`)
 		if (!args[1]) return msg.channel.send(`:loud_sound: Current volume is **${serverQueue.volume}**`);
 		serverQueue.volume = args[1];
 		serverQueue.connection.dispatcher.setVolumeLogarithmic(args[1] / 5);
-		return msg.channel.send(`:speaker: تم تغير الصوت الي **${args[1]}**`);
+		return msg.channel.send(`:speaker: Sound changed to **${args[1]}**`);
 	} else if (command === `np`) {
-		if (!serverQueue) return msg.channel.send('لا يوجد شيء حالي ف العمل.');
+		if (!serverQueue) return msg.channel.send('There is nothing playing.');
 		const embedNP = new Discord.RichEmbed()
-	.setDescription(`:notes: الان يتم تشغيل: **${serverQueue.songs[0].title}**`)
+	.setDescription(`:notes: Now is running: **${serverQueue.songs[0].title}**`)
 		return msg.channel.sendEmbed(embedNP);
 	} else if (command === `queue`) {
 		
@@ -129,16 +147,16 @@ ${serverQueue.songs.map(song => `**${++index} -** ${song.title}`).join('\n')}
 		if (serverQueue && serverQueue.playing) {
 			serverQueue.playing = false;
 			serverQueue.connection.dispatcher.pause();
-			return msg.channel.send('تم إيقاف الموسيقى مؤقتا!');
+			return msg.channel.send('Music paused');
 		}
 		return msg.channel.send('There is nothing playing.');
 	} else if (command === "resume") {
 		if (serverQueue && !serverQueue.playing) {
 			serverQueue.playing = true;
 			serverQueue.connection.dispatcher.resume();
-			return msg.channel.send('استأنفت الموسيقى بالنسبة لك !');
+			return msg.channel.send('Music resumed');
 		}
-		return msg.channel.send('لا يوجد شيء حالي في العمل.');
+		return msg.channel.send('There is nothing playing.');
 	}
 
 	return undefined;
@@ -180,7 +198,7 @@ async function handleVideo(video, msg, voiceChannel, playlist = false) {
 		serverQueue.songs.push(song);
 		console.log(serverQueue.songs);
 		if (playlist) return undefined;
-		else return msg.channel.send(` **${song.title}** تم اضافه الاغنية الي القائمة!`);
+		else return msg.channel.send(`Song added to list :**${song.title}**`);
 	}
 	return undefined;
 }
@@ -205,7 +223,7 @@ function play(guild, song) {
 		.on('error', error => console.error(error));
 	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
 
-	serverQueue.textChannel.send(`بدء تشغيل: **${song.title}**`);
+	serverQueue.textChannel.send(`Start playing: **${song.title}**`);
 }
 
 const developers = ["412683473522786324"]
@@ -235,20 +253,19 @@ client.on("message", message => {
       .setDescription(`
 ══════════ஜ۩۞۩ஜ════════════  
     
-     =play
-     امر تشغيل الأغنية , !شغل الرابط او اسم الأعنية
-     =skip
-     تغير الأغنية
-     =pause
-     ايقاف الأغنية
-     =resume
-     مواصلة الأغنية
-     =vol
-   لتغيير درجه الصوت 1-100
-     =stop
-     خروج البوت من الروم
+To start playing music / =play 
 
-رابط البوت |https://discordapp.com/api/oauth2/authorize?client_id=460754607765848064&permissions=21469585838&scope=bot
+To skip the music / =skip
+
+To pause the music / =pause
+
+To resume the music / =resume
+
+To change the sound level from 1 to 100 / =vol
+
+To stop the music / =stop
+
+To invite the bot |https://discordapp.com/api/oauth2/authorize?client_id=460754607765848064&permissions=21469585838&scope=bot
 ══════════ஜ۩۞۩ஜ════════════ 
  `)
 
@@ -256,23 +273,5 @@ client.on("message", message => {
    
    }
    }); 
-client.on('ready', function(){
-        client.user.setStatus("dnd");
-        var ms = 60000 ;
-        var setGame = ['To Get Help | =music','By :Rando#6966 | =music'];
-        var i = -1;
-        var j = 0;
-        setInterval(function (){
-            if( i == -1 ){
-                j = 1;
-            }
-            if( i == (setGame.length)-1 ){
-                j = -1;
-            }
-            i = i+j;
-            client.user.setGame(setGame[i],`https://www.instagram.com/rando.i0/`);
-        }, ms);60000
-
-   });
 client.login(process.env.BOT_TOKEN);
 
