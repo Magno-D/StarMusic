@@ -11,14 +11,16 @@ const youtube = new YouTube(GOOGLE_API_KEY);
 const queue = new Map();
 
 client.on('ready', () => {
-    console.log('I am ready!');
+  console.log('-----------------')
+  console.log('${client.user.username} Is Online')
+  console.log('-----------------')
 });
 
 client.on('warn', console.warn);
 
 client.on('error', console.error);
 
-client.on('ready', () => console.log('Yo this ready!'));
+client.on('ready', () => console.log(`servers! [ " ${client.guilds.size} " ]`));
 
 // client.on('disconnect', () => console.log('I just disconnected, making sure you know, I will reconnect now...'));
 
@@ -207,7 +209,7 @@ function play(guild, song) {
 }
 
 client.on('message', message => {
-    var prefix = "!";
+    var prefix = "=";
     
       if (!message.content.startsWith(prefix)) return;
       var args = message.content.split(' ').slice(1);
